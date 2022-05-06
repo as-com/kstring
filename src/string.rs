@@ -367,6 +367,22 @@ impl<'de, B: crate::backend::HeapStr> serde::de::Visitor<'de> for StringVisitor<
     }
 }
 
+#[cfg(feature = "arbitrary")]
+impl<'a, B: crate::backend::HeapStr> arbitrary::Arbitrary<'a> for KStringBase<B> {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        <&str as arbitrary::Arbitrary>::arbitrary(u).map(Self::from_ref)
+    }
+
+    fn arbitrary_take_rest(u: arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        <&str as arbitrary::Arbitrary>::arbitrary_take_rest(u).map(Self::from_ref)
+    }
+
+    #[inline]
+    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+        <&str as arbitrary::Arbitrary>::size_hint(depth)
+    }
+}
+
 use inner::KStringInner;
 
 #[cfg(not(feature = "unsafe"))]

@@ -266,6 +266,22 @@ impl<'de: 's, 's> serde::Deserialize<'de> for KStringRef<'s> {
     }
 }
 
+#[cfg(feature = "arbitrary")]
+impl<'s> arbitrary::Arbitrary<'s> for KStringRef<'s> {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'s>) -> arbitrary::Result<Self> {
+        <&str as arbitrary::Arbitrary>::arbitrary(u).map(Self::from_ref)
+    }
+
+    fn arbitrary_take_rest(u: arbitrary::Unstructured<'s>) -> arbitrary::Result<Self> {
+        <&str as arbitrary::Arbitrary>::arbitrary_take_rest(u).map(Self::from_ref)
+    }
+
+    #[inline]
+    fn size_hint(depth: usize) -> (usize, Option<usize>) {
+        <&str as arbitrary::Arbitrary>::size_hint(depth)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
