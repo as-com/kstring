@@ -279,10 +279,10 @@ impl<'s, B: crate::backend::HeapStr> From<&'s crate::backend::BoxedStr> for KStr
     }
 }
 
-impl<B: crate::backend::HeapStr> From<&'static str> for KStringBase<B> {
+impl<'a, B: crate::backend::HeapStr> From<&'a str> for KStringBase<B> {
     #[inline]
-    fn from(other: &'static str) -> Self {
-        Self::from_static(other)
+    fn from(other: &'a str) -> Self {
+        Self::from_ref(other)
     }
 }
 
